@@ -26,7 +26,7 @@ const player = {
       if (!player.queue.length) throw "The queue is empty and no file was specified";
       file = player.queue[0];
     }
-    player.audio.src = await player.toUrl(file ?? queue[0]);
+    player.audio.src = await player.toUrl(file);
     player.audio.currentTime = 0;
     await player.audio.play();
   },
