@@ -14,21 +14,16 @@ const mimeTypes = {
 };
 
 async function getAudios(dir /* string */) {
-  const files = [];
-  for (const child of await readdir(dir)) {
-    files.push(
-      (async () => {
-        const path = join(dir, child);
-        const stats = await stat(path);
-        if (stats.isDirectory()) return getAudios(path);
-        else {
-          const ext = getExt(path);
-          if (!ext || !mimeTypes.hasOwnProperty(ext)) return void 0;
-          return path;
-        }
-      })()
-    );
-  }
+  const files = (await readdir(dir)).map(async child => {
+    const path = join(dir, child);
+    const stats = await stat(path);
+    if (stats.isDirectory()) return getAudios(path);
+    else {
+      const ext = getExt(path);
+      if (!ext || !mimeTypes.hasOwnProperty(ext)) return void 0;
+      return path;
+    }
+  });
   return Promise.all(files).then(f => f.flat().filter(Boolean));
 }
 
